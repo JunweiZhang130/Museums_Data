@@ -1,4 +1,4 @@
-# Museum Data in MET - A Data Analysis about Collection Diversities 1900 to 2020
+# Museum Data in MET: A Data Analysis about Collection Diversities 1900 to 2020
 
 This repository contains the code and data used in a data analysis paper about the collection diversities of the Metropolitan Museum of Art (MET) over the years. The paper focuses on the change of nationality, culture, and medium of the artwork collections.
 
