@@ -83,6 +83,8 @@ cleaned_data <- read_csv(here::here("outputs/cleaned_data.csv"))
 
 ```
 
+## Amount of Artworks in Various Departments 
+
 The Metropolitan Museum of Art (MET) has 19 departments dedicated to different collections of art objects from various cultures and time periods. Each department has a unique focus, ranging from Drawings and Prints to Islamic Art to Libraries.
 
 We examined the total artwork amount in each department. We found that the Drawing and Painting department had the most number of objects with just over 16,7152, while the Libraries department had the smallest collection of 390 objects.
@@ -111,14 +113,6 @@ kable(department_counts) %>%
                 font_size = 10)
 
 ```
-
-From [@tbl-1] we can see MET has 19 departments dedicated to different collections of art objects from various cultures and time periods. Each department has a unique focus, ranging from Drawings and Prints to Islamic Art to Libraries.
-
-We examined the total artwork amount in each department. We found that the Drawing and Painting department had the most number of objects with just over 16,7152, while the Libraries department had the smallest collection of 390 objects.
-
-We observed that there was a significant variation in the distribution of objects across departments. For instance, the European Sculpture and Decorative Arts Department had a collection of 42,934 objects, which was significantly larger than the number of objects in the Arts of Africa, Oceania, and the Americas, which had a collection of only 12,335 objects. The variation in collection size could be attributed to factors such as the popularity of different art forms, the historical significance of certain periods or cultures, and the availability of art objects for acquisition.
-
-Our findings provide valuable insights into the distribution of artwork at the MET, shedding light on the representation of different art forms and cultures in the museum's holdings.
 
 ```{r}
 #| label: fig-nationalities
@@ -175,6 +169,8 @@ ggplot(artworks_by_nationality, aes(x = artist_nationality, y = num_artworks)) +
         panel.grid.minor = element_blank())
 
 ```
+
+## Artist Nationalities
 
 In our analysis of the Metropolitan Museum of Art's (MET) dataset, we explored the representation of different artist nationalities in the museum's collections. Using the "Artist Nationality" variable, we identified the top 10 nationalities represented among the artists in the dataset([@fig-nationalities]).
 
@@ -236,6 +232,8 @@ ggplot(artworks_by_nationality_highlight, aes(x = artist_nationality, y = num_ar
         )
 ```
 
+## Artist Nationalities and Highlight Artworks
+
 In [@fig-nationalitieshighlights], we examined the top 10 artist nationalities whose artwork was highlighted in the MET museum. We defined highlighted artwork as objects that were labelled with a "Highlight" tag in the dataset. Our analysis showed that American artists had the highest number of highlighted artwork with 387 objects, followed by French artists with 244 objects, and Italian artists with 116 objects. The other nationalities in the top 10 were German, British, Dutch, Netherlandish, Japanese, Spanish, Chinese.
 
 Furthermore, we analyzed that even spanish artworks are not one of the top 10 large collections in the dataset, they become one of the 10 nationalities owns most highlights artworks.
@@ -268,6 +266,7 @@ ggplot(object_counts_bar, aes(x = `Object Name`, y = count, fill = `Object Name`
 
 
 ```
+## Artworks and Mediums
 
 [@fig-collectionobjects] showed that the most popular object medium in the MET's collection was prints. This was followed by photograph and drawings. Other popular mediums included book, fragment, and piece. Meanwhile, we can see Print has the largest collections among all other object mediums.
 
@@ -294,6 +293,8 @@ ggplot(accession_data, aes(x = AccessionYear, y = num_artworks)) +
 
 ```
 
+## Artworks Accession Over Years
+
 The accession year of artwork in the Metropolitan Museum of Art (MET) provides valuable insights into the museum's acquisition history and patterns of collecting. We analyzed the number of artwork accessions over the years to understand the trends in the museum's collection over time in [@fig-accession]. Our analysis revealed that the number of accessions per year has varied significantly over the course of the museum's history. For instance, the year with the highest number of accessions was 1960s. In contrast, the year with the lowest number of accessions was 2020. Furthermore, we examined the distribution of artwork accessions by decade. We found that the number of artwork access reached a peak in every 50 years. The 2010s had the second highest number of accessions, followed by the 1920s.
 
 ```{r}
@@ -319,11 +320,13 @@ ggplot(highlighted_artwork, aes(x = AccessionYear, y = count)) +
 
 ```
 
+## Highlight Artworks Accession Over Years
+
 The Met defined "highlight artwork" as those that have been prominently featured in the museum's exhibitions or publications. [@fig-accessionhighlight] revealed that the number of highlight artwork accessions varied from year to year. Since 1900, every year the MET has acquired a new highlight artworks. We also looked at the total number of artwork accessions per year and found that there was a general trend of increasing accessions over time. In the early 1900s and before, the number of accessions was relatively low, with fewer than 500 accessions per year. However, in the latter half of the 20th century, the number of accessions increased significantly.
 
 # Discussion
 
-## Bias and Concerns about MET Collections
+## Bias and Histories about MET Collections
 
 ```{r}
 #| label: fig-countries
@@ -369,7 +372,13 @@ theme_minimal() +
 
 ```
 
+From [@fig-countries], we can see there is obvious peaks of amount of artwork accessions over the years in artworks from all three nations. The increase in the number of artwork accessions at the Metropolitan Museum of Art from 1900 to 2020 is likely due to several factors, including the growth of the museum's collection, increased public interest in art and culture, and the museum's expanded efforts to acquire works from diverse cultures and time periods. From [@fig-nationalities], we can tell that MET had a larger number of artworks accessioned from American artists compared to French artists and Italian artists. This could indicate that even though the mission of MET is "The Metropolitan Museum of Art collects, studies, conserves, and presents significant works of art across time and cultures in order to connect all people to creativity, knowledge, ideas, and one another", they still show significant preference for American art or a stronger focus on collecting American art. 
+
+Another interesting finding is that while American artists had the largest number of artworks accessioned overall, French artists had the highest average number of artworks accessioned per artist. This shows the history ties MET has with France - When the MET was founded in 1870, France was a dominant force in the art world. As a result, the museum began collecting French artworks early on, and this trend continued over the years. After MET earns a reputation about its French artwork collection, it has also actively acquired French artworks through purchases and auctions over the years. The museum has a large acquisition budget towards European artworks, which has enabled it to acquire many important French artworks and artworks frmo other European nations. 
+
 ```{r}
+#| label: fig-2nations
+#| fig-cap: Artworks accession by decade and artist from America and French
 #| echo: false
 #| warning: false
 #| message: false
@@ -382,7 +391,7 @@ filtered_data <- cleaned_data %>%
          AccessionYear >= 1920 & AccessionYear <= 2020,
          Department %in% c("Print", "Photographs", "Drawing"))
 
-# group by AccessionYear, Department, and Artist Nationality and calculate the count of artworks
+# group by AccessionY ear, Department, and Artist Nationality and calculate the count of artworks
 grouped_data <- filtered_data %>%
   group_by(AccessionYear, Department, `Artist Nationality`) %>%
   summarize(count = n())
@@ -401,29 +410,34 @@ ggplot(grouped_data, aes(x = AccessionYear, y = count)) +
 
 ```
 
-# Discussion
+## Need to Represent Art in Diversities
 
-## First discussion point
+[@fig-2nations] shows the number of artworks acquired by the Metropolitan Museum of Art (MET) from 1900 to 2020, grouped by decade and artists from American and France. From the graph, we can see that the MET has acquired a significant number of artworks from both American and French artists, with the number of American artworks being consistently higher than French artworks throughout the 20th century. We can also find that the amount of American artworks has steadily increased while French artwork collections are decreasing, which shows the museum is more and more dominated by local arts, which drives it off the museum's mission. 
 
-Our analysis revealed that the majority of artworks in the dataset were created by male artists, which is consistent with previous studies on gender representation in the art world.However, we also found there is a heavy load of american and Europe art represent in the gallery, and as time goes by, the variety of collections is not changing.
-
-## Collection acquiring
-
-Furthermore, we examined the accession year data and found that the majority of artworks in the dataset were acquired by the Met in the 20th century. This could be attributed to several factors, such as the Met's focus on contemporary art in the 20th century or the increase in the number of art collectors and donors during this time period. However, it is worth noting that the dataset includes a significant number of artworks that were acquired in the 19th and 21st centuries as well, indicating that the Met has been actively acquiring artworks from different time periods.
+The graph also shows that the number of artworks acquired by the MET has varied over time, with some decades seeing a significant increase or decrease in the number of acquisitions. For example, there was a significant increase in the number of artworks acquired by the MET in the 1950s to 1970s, possibly due to the post-World War II economic boom.
 
 ## Misrepresenting the World Culture
 
-Misrepresentation of culture can occur when metadata highlight and accession year data are not considered carefully. Metadata highlight data can lead to a biased view of a culture if the selected artworks only represent a narrow range of themes, styles, or time periods within that culture. For example, if an art museum only highlights ancient Egyptian art that depicts pharaohs and monumental architecture, it may present a skewed and incomplete view of the complex and diverse culture of ancient Egypt. Similarly, accession year data can perpetuate stereotypes or misconceptions about a culture if the selected artworks only reflect a limited period of its history or a particular moment of cultural exchange.
+Through the graphs and tables, I find that MET's collections are heavily dominated by American arts, which does not match the MET's museum's vision and mission, which is collect the highlight arts from cultures all over the world. The misrepresentation of cultures can lead to a biased view of a culture, especially when major highlight artworks are only from America and Europe, the museum will represent a narrow range of themes, styles, or time periods within the world culture. For example, if an art museum only highlights American art in its gallery, it may present a skewed and incomplete view of the complex and diverse culture, and lead visitor to neglect other cultures which should be paying attention to preserve, too. Similarly, accession year data can perpetuate stereotypes or misconceptions about a culture if the selected artworks only reflect a limited period of its history or a particular moment of cultural exchange.
 
 Therefore, it is important for art museums to consider the context and significance of each artwork when selecting pieces for metadata highlight and accession year data. By choosing a diverse range of artworks that represent different themes, styles, and time periods, museums can provide a more accurate and nuanced representation of a culture. Additionally, museums should make an effort to include works by lesser-known or underrepresented artists, as well as artworks that challenge or subvert dominant narratives about a culture. This can help to promote a more inclusive and equitable representation of cultures in art museums.
 
-## Weaknesses and next steps
+# Conclusion
 
-The Metropolitan Museum of Art's open dataset is a valuable resource for data scientists and researchers looking to study art, history, and culture. However, like any dataset, it has its strengths and weaknesses. The dataset from The Metropolitan Museum of Art (The Met) offers several strengths that make it a valuable resource for analysis. First, the dataset is large and diverse, containing over 470,000 records of art objects from around the world and across time periods. This diversity provides a vast collection for analysis, allowing researchers to explore various topics from different angles. Another strength is that the dataset is available to anyone for free, making it easily accessible to researchers and art enthusiasts alike. This open access encourages more people to use and explore the dataset, promoting broader participation and facilitating collaborative research. In addition, the dataset contains rich metadata about each object, such as its title, artist, date, medium, and dimensions. This information provides a wealth of data for analysis, offering researchers insights into the cultural and historical contexts of the objects and the artists who created them.
+## Strength and Weaknesses
 
-Despite these strengths, the dataset also has some limitations that must be considered. One limitation is that the data is collected and uploaded in different formats over time, which can make it challenging to compare and analyze data across different periods. Another limitation is that the dataset primarily includes text-based information, such as titles and descriptions, and images of the art objects. Other types of data, such as audio or video recordings, are not included, which may limit certain types of analysis. Moreover, missing data is a potential issue in the dataset, as some objects may lack detailed descriptions or may be missing important metadata. This limitation can limit the reliability and validity of analyses, and it is important to consider the completeness and accuracy of the data when conducting research using this dataset. Additionally, the gender of artists is significantly missing from the dataset, which may impact the analysis of gender representation in art.
+The Metropolitan Museum of Art's open dataset is a valuable resource for data scientists and researchers looking to study art, history, and culture. However, like any dataset, it has its strengths and weaknesses.
 
-Overall, while the Met's open dataset is a valuable resource for data science analysis, researchers should be aware of its limitations and potential biases when interpreting the results of their analyses.
+The dataset from the MET offers several strengths that make it a valuable resource for analysis. First, the dataset is large and diverse, containing over 470,000 records of art objects from around the world and across time periods. This diversity provides a vast collection for analysis, allowing researchers to explore various topics from different angles. Another strength is that the dataset is available to anyone for free, making it easily accessible to researchers and art enthusiasts alike. This open access encourages more people to use and explore the dataset, promoting broader participation and facilitating collaborative research. In addition, the dataset contains rich metadata about each object, such as its title, artist, date, medium, and dimensions. This information provides a wealth of data for analysis, offering researchers insights into the cultural and historical contexts of the objects and the artists who created them.
+
+However, this data still has some limitations that must be considered. One limitation is that the data is collected and uploaded in different formats over time, which can make it challenging to compare and analyze data across different periods. Another limitation is that the dataset primarily includes text-based information, such as titles and descriptions, and images of the art objects. Other types of data, such as audio or video recordings, are not included, which may limit the analysis of this research. Moreover, missing data is a large issue in the dataset, as some objects are lack detailed descriptions or are missing important metadata, for example, genders are misrepresented in "|" and "||", which makes it impossible to figure out the meanings. This limitation can limit the reliability and validity of analyses, and it is important to consider the completeness and accuracy of the data when conducting research using this dataset.
+
+## Next Step
+
+To address the misrepresentation of cultures in art museums, it is important for museums to choose a diverse range of artworks that represent different cultures, mediums, and time periods. This can provide a more accurate and nuanced representation of the world culture and promote a more inclusive and equitable representation of cultures in art museums. 
+
+In addition, it is important to consider the limitations of the dataset, such as the collection and uploading of data in different formats over time, the exclusion of other types of data, and missing data. The museum should establish clear policies and handbook about data collecting and updating, so the data can still be useful and carry its meaning over years. By acknowledging these limitations and selecting a diverse range of artworks, museums can promote a more accurate and comprehensive representation of world cultures for visitors.
+
 
 \newpage
 

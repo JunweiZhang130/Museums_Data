@@ -28,6 +28,22 @@ cleaned_data <- cleaned_data %>%
          `Artist Display Name`,
          `Artist Nationality`)
 
+# Create example data frame with AccessionYear column
+df <- data.frame(
+  ObjectID = c(1, 2, 3),
+  AccessionYear = c("19171917")
+)
+
+# Check the unique values in AccessionYear column
+unique(cleaned_data$AccessionYear)
+
+# Replace the value "19171917" with "1917"
+cleaned_data$AccessionYear <- gsub("19171917", "1917", cleaned_data$AccessionYear)
+
+# Check the unique values in AccessionYear column again to confirm the change
+unique(cleaned_data$AccessionYear)
+
+
 #### Save data ####
 write_csv(cleaned_data, "outputs/cleaned_data.csv")
 
