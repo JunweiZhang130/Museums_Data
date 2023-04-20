@@ -7,7 +7,7 @@ This repository can be found at https://github.com/JunweiZhang130/Museums_Data.g
 ## Notes of Reproduction
 Because of the size of the MET dataset is over the file limit, therefore the original input dataset is not uploaded in this repository, you can find the dataset at MET openaccess https://github.com/metmuseum/openaccess.git.
 
-The paper and the graphs are based on our cleaned data(outputs/cleaned_data.csv), so if you prefer not to review the raw data, that's not a problem. Then run the *references.bib* file (outputs/paper) for references and citations, after that run the *Museum Data in MET: A Data Analysis about Collection Diversities 1900 to 2020* (outputs/paper). 
+The paper and the graphs are based on our cleaned data(`outputs/cleaned_data.csv`), so if you prefer not to review the raw data, that's not a problem. Then run the *references.bib* file (`outputs/paper`) for references and citations, after that run the *Museum Data in MET: A Data Analysis about Collection Diversities 1900 to 2020* (`outputs/paper`). 
 
 The repository is organised as follows:                  
 ## Inputs                
