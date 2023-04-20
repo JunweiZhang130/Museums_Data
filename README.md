@@ -17,7 +17,7 @@ We removed the raw data since the file was too large, but you can find the clean
 The outputs folder coontains data file, paper file.
 
 ##### Data File                     
-Since the restriction of github file size, we included the cleaned dataset cleaned_data.csv. This file includes all data we used in this paper.              
+Since the restriction of github file size, we included the cleaned dataset *cleaned_data.csv*. This file includes all data we used in this paper.              
 
 ##### Paper File              
 The .bib file contains the citations for the raw data, packages and literature used in the report.           
