@@ -1,118 +1,439 @@
 ---
-title: "My title"
-subtitle: "My subtitle if needed"
+title: "Museum Data in MET"
+subtitle: "A data analysis about collection diversities 1900 to 2020"
 author: 
-  - First author
-  - Another author
-thanks: "Code and data are available at: LINK."
+  - Rae Zhang
+thanks: "Code and data are available at: https://github.com/JunweiZhang130/Museums_Data.git."
 date: "`r Sys.time()`"
 date-format: "D MMMM YYYY"
-abstract: "First sentence. Second sentence. Third sentence. Fourth sentence."
+abstract: "This paper aims to explore the change in collections of the Metropolitan Museum of Art (MET) over the years, focusing on the change of artists, culture, and medium of the artwork. The research utilizes data made available by the MET, which includes information on more than 470,000 artworks in its collection. The paper discusses the strengths and weaknesses of the dataset, including its large and diverse content, open access, and detailed metadata, but also highlights its biases and limitations in cultural studies."
 format: pdf
 number-sections: true
 bibliography: references.bib
 ---
 
+# Introduction
+Technology has all but taken over the modern world, and a big part of this digital revolution is data collection. Museums are no exception. As institutions preserve memories for society, they have tremendous amounts of data, which holds power and yields interesting ways to analyse museums, collections, objects and creators in new ways. 
+
+This paper wants to explore the change of collections in Metropolitan Museum of Art (MET) over years, and how we can see the change of highlights collection over years based on the artists, content, and the region of the artwork, and what kind of actions are taken as a result of this data. By analyzing the dataset in the museum, we are able to determine the best way to serve the visitors and help museums better accomplish their own mission.  
+
+# Data
+
+## Data Source and Methodology
+The Metropolitan Museum of Art presents over 5,000 years of art from around the world for everyone to experience and enjoy. The Museum lives in two iconic sites in New York City—The Met Fifth Avenue and The Met Cloisters. Millions of people also take part in The Met experience online. 
+Since it was founded in 1870, The Met has always aspired to be more than a treasury of rare and beautiful objects. Every day, art comes alive in the Museum's galleries and through its exhibitions and events, revealing both new ideas and unexpected connections across time and across cultures.
+The Metropolitan Museum of Art provides select datasets of information on more than 477,804 artworks in its Collection for unrestricted commercial and noncommercial use. To the extent possible under law, The Metropolitan Museum of Art has waived all copyright and related or neighbouring rights to this dataset using Creative Commons Zero. This work is published from: The United States Of America. The data is in CSV format. 
+## Data Collection
+The Museum dedicates select data of 477,804 artworks in its collection―both works it believes to be in the public domain and those under copyright or other restrictions―to the public domain.  People can download, share, modify, and distribute the data for any purpose, including commercial and noncommercial use, free of charge and without requiring permission from the Museum.
+
+The Metropolitan Museum of Art collected the data for their dataset from their internal collection management system, called the Museum System (TMS). TMS is a database that tracks information about each object in the museum's collection, including its title, artist, date, medium, dimensions, provenance, and exhibition history.
+
+The Met's staff members enter and update this information in TMS as they catalog new acquisitions or revise existing records. The information in TMS is then used to create the museum's online collection database, which includes images and descriptions of each object.
+
+## Data Cleaning
+
+To begin the data cleaning process, we first reviewed the dataset and used a set of questions to guide our variable selection. Our research goal is to analyze the collection gathering in the MET, and to answer several key questions about the museum's artwork, including the department with the largest number of artworks, the cultures that are most represented in the collection, the types of artists from different nationalities' artwork that are most prominent in the overall collection, the representation of highlighted artifacts across all collections, and the trends in accession over time and potential factors that may impact accession.
+
+Based on these research questions, we identified several variables that we believed could help answer these questions, including `Object ID`, `Highlight`, `Timeline_Work`, `Department`, `AccessionYear`, `Object Name`, `Title`, `Culture`, `Artist Display Name`, and `Artist Nationality`.
+
+After identifying these variables, we then proceeded to drop all missing values from the dataset that showed `N/A`. We also standardized the formatting of the Country and Culture variable, as the recording of this variable was done by different people and in different formats. By cleaning and standardizing the data, we aimed to ensure that our subsequent data analyses would be more accurate and effective in answering our research questions.
+
+## Data Analysis
+We obtained the dataset from the METmuseum Github (Wellcome 2021). Data can be downloaded from Met Github directly. We loaded in, cleaned and analyzed the data using `R` [@citeR], `dplyr` [@citedplyr], `tidyverse` [@citetidyverse], `haven` [@citehaven], `kableExtra` [@citekableExtra], `readr` [@citereadr], `ggplot2` [@citeggplot2],  `stringr` [@citestringr],  and `forcats` [@citeforcats] packages. 
+
+# Results
+
+
 ```{r}
-#| include: false
+#| echo: false
 #| warning: false
 #| message: false
 
-library(tidyverse)
-library(palmerpenguins)
+# Loading in datasets and library
+library(dplyr)
+library(knitr)
+library(kableExtra)
+library(readr)
+library(ggplot2)
+library(stringr)
+library(forcats)
+
+
+# assuming your dataset is called cleaned_data and is stored in the "outputs" folder
+cleaned_data <- read_csv(here::here("outputs/cleaned_data.csv"))
+
 ```
 
+The Metropolitan Museum of Art (MET) has 19 departments dedicated to different collections of art objects from various cultures and time periods. Each department has a unique focus, ranging from Drawings and Prints to Islamic Art to Libraries.
 
-# Introduction
+We examined the total artwork amount in each department. We found that the Drawing and Painting department had the most number of objects with just over 16,7152, while the Libraries department had the smallest collection of 390 objects.
 
-You can and should cross-reference sections and sub-sections. For instance, @sec-data and @sec-first-point. 
+We observed that there was a significant variation in the distribution of objects across departments. For instance, theuropean Sculpture and Decorative Arts department had a collection of 42,934 objects, which was significantly larger than the number of objects in the Arts of Africa, Oceania, and the Americast, which had a collection of only 12,335 objects. The variation in collection size could be attributed to factors such as the popularity of different art forms, the historical significance of certain periods or cultures, and the availability of art objects for acquisition.
+
+Our findings provide valuable insights into the distribution of artwork at the MET, shedding light on the representation of different art forms and cultures in the museum's holdings. 
 
 
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| results: "asis"
 
-# Data {#sec-data}
+# count the number of rows in each department
+department_counts <- cleaned_data %>% 
+  group_by(Department) %>% 
+  summarize("Number of Collections" = n()) %>% 
+  rename(Department = Department) %>%
+  arrange(desc(`Number of Collections`))
 
-Our data is of penguins (@fig-bills).
+# create a nicely formatted table using kable()
+# count the number of rows in each department
+department_counts <- cleaned_data %>% 
+  group_by(Department) %>% 
+  summarize("Number of Collections" = n()) %>% 
+  rename(Department = Department) %>%
+  arrange(desc(`Number of Collections`))
+
+# create a nicely formatted table using kable()
+kable(department_counts, 
+      caption = "Number of Artworks by Department"
+      ) %>%
+  kable_styling(latex_options = "HOLD_position", 
+                font_size = 10)
+
+```
+
+The Metropolitan Museum of Art (MET) has 19 departments dedicated to different collections of art objects from various cultures and time periods. Each department has a unique focus, ranging from Drawings and Prints to Islamic Art to Libraries.
+
+We examined the total artwork amount in each department. We found that the Drawing and Painting department had the most number of objects with just over 16,7152, while the Libraries department had the smallest collection of 390 objects.
+
+We observed that there was a significant variation in the distribution of objects across departments. For instance, theuropean Sculpture and Decorative Arts department had a collection of 42,934 objects, which was significantly larger than the number of objects in the Arts of Africa, Oceania, and the Americast, which had a collection of only 12,335 objects. The variation in collection size could be attributed to factors such as the popularity of different art forms, the historical significance of certain periods or cultures, and the availability of art objects for acquisition.
+
+Our findings provide valuable insights into the distribution of artwork at the MET, shedding light on the representation of different art forms and cultures in the museum's holdings. 
 
 ```{r}
 #| label: fig-bills
-#| fig-cap: Bills of penguins
 #| echo: false
+#| warning: false
+#| message: false
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
+# filter out rows with missing or NA values in Nationality column
+cleaned_data$`Artist Nationality` <- gsub("\\|", "", cleaned_data$`Artist Nationality`)
+
+artworks_by_nationality <- cleaned_data %>%
+  mutate(artist_nationality = case_when(
+    grepl("(?i)american", `Artist Nationality`) ~ "American",
+    grepl("(?i)british", `Artist Nationality`) ~ "British",
+    grepl("(?i)french", `Artist Nationality`) ~ "French",
+    grepl("(?i)italian", `Artist Nationality`) ~ "Italian",
+    grepl("(?i)spanish", `Artist Nationality`) ~ "Spanish",
+    grepl("(?i)german", `Artist Nationality`) ~ "German",
+    grepl("(?i)chinese", `Artist Nationality`) ~ "Chinese",
+    grepl("(?i)japanese", `Artist Nationality`) ~ "Japanese",
+    grepl("(?i)russian", `Artist Nationality`) ~ "Russian",
+    TRUE ~ `Artist Nationality`
+  )) %>%
+  group_by(artist_nationality) %>%
+  summarize(num_artworks = n()) %>%
+  arrange(desc(num_artworks)) %>%
+  filter(!is.na(artist_nationality) & artist_nationality != "" & str_detect(artist_nationality,"[[:alnum:]]+")) %>%
+  head(10)
+
+# adjust order of bars
+artworks_by_nationality$artist_nationality <- forcats::fct_relevel(artworks_by_nationality$artist_nationality, "Austrian", after = Inf)
+
+# plot bar chart
+ggplot(artworks_by_nationality, aes(x = artist_nationality, y = num_artworks)) +
+  geom_bar(stat = "identity", 
+           fill = "blue", 
+           alpha = 0.6) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Artist Nationality", y = "Number of Collections", title = "Top 10 Artist Nationalities by Artwork Collections") +
   theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+  theme(plot.title = element_text(size = 12, 
+                                  face = "bold", 
+                                  hjust = 0.5),
+        axis.text.x = element_text(angle = 45, 
+                                   hjust = 1, 
+                                   size = 12, 
+                                   family = "sans"),
+        axis.text.y = element_text(size = 12, 
+                                   family = "sans"),
+        axis.title = element_text(size = 12, 
+                                  family = "sans"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank())
+
 ```
+In our analysis of the Metropolitan Museum of Art's (MET) dataset, we explored the representation of different artist nationalities in the museum's collections. Using the "Artist Nationality" variable, we identified the top 10 nationalities represented among the artists in the dataset.
 
-Talk more about it.
+The top 10 artist nationalities in the MET's collections, ranked by the total number of artwork objects, are as follows:
+American - 47,797
+French - 42,748
+Italian - 29,910
+British - 22,491
+German - 18,293
+Japanese - 15,097
+Spanish - 12,599
+Chinese - 10,322
+Dutch - 9,876
+Flemish - 7,303
 
-Also bills and their average (@fig-billssssss). (You can change the height and width, but don't worry about doing that until you have finished every other aspect of the paper - Quarto will try to make it look nice and the defaults usually work.)
+Our analysis also revealed that the majority of the artwork in the MET's collections were created by artists from the United States, with over 60,000 objects. This was followed by French artists with over 42,000 objects, and Italian artists with over 29,000 objects.
+
 
 ```{r}
-#| label: fig-billssssss
-#| fig-cap: More bills of penguins
 #| echo: false
-#| fig-width: 8
-#| fig-height: 4
+#| warning: false
+#| message: false
+#| results: "asis"
 
-ggplot(penguins, aes(x = island, fill = species)) +
-  geom_bar(alpha = 0.8) +
-  scale_fill_manual(values = c("darkorange","purple","cyan4"),
-                    guide = "none") +
+cleaned_data$`Artist Nationality` <- gsub("\\|", "", cleaned_data$`Artist Nationality`)
+
+artworks_by_nationality_highlight <- cleaned_data %>%
+  mutate(artist_nationality = case_when(
+    grepl("(?i)american", `Artist Nationality`) ~ "American",
+    grepl("(?i)british", `Artist Nationality`) ~ "British",
+    grepl("(?i)french", `Artist Nationality`) ~ "French",
+    grepl("(?i)italian", `Artist Nationality`) ~ "Italian",
+    grepl("(?i)spanish", `Artist Nationality`) ~ "Spanish",
+    grepl("(?i)german", `Artist Nationality`) ~ "German",
+    grepl("(?i)chinese", `Artist Nationality`) ~ "Chinese",
+    grepl("(?i)japanese", `Artist Nationality`) ~ "Japanese",
+    grepl("(?i)russian", `Artist Nationality`) ~ "Russian",
+    TRUE ~ `Artist Nationality`
+  )) %>%
+  filter(Highlight == "TRUE") %>%
+  group_by(artist_nationality) %>%
+  summarize(num_artworks = n()) %>%
+  arrange(desc(num_artworks)) %>%
+    filter(!is.na(artist_nationality) & artist_nationality != "" & str_detect(artist_nationality,"[[:alnum:]]+")) %>%
+  head(10)
+
+ggplot(artworks_by_nationality_highlight, aes(x = artist_nationality, y = num_artworks)) +
+  geom_bar(stat = "identity", 
+           fill = "blue", 
+           alpha = 0.6) +
+  scale_y_continuous(expand = c(0, 0)) +
+  labs(x = "Artist Nationality", 
+       y = "Number of Highlight Collections", 
+       title = "Top 10 Artist Nationalities by Artwork Collections") +
   theme_minimal() +
-  facet_wrap(~species, ncol = 1) +
-  coord_flip()
+  theme(plot.title = element_text(size = 12, 
+                                  face = "bold", 
+                                  hjust = 0.5),
+        axis.text.x = element_text(angle = 45, 
+                                   hjust = 1, 
+                                   size = 12, 
+                                   family = "sans"),
+        axis.text.y = element_text(size = 12, 
+                                   family = "sans"),
+        axis.title = element_text(size = 12, 
+                                  family = "sans"),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank()
+        )
 ```
 
-Talk way more about it. 
+In this analysis, we examined the top 10 artist nationalities whose artwork was highlighted in the MET museum. We defined highlighted artwork as objects that were labelled with a "Highlight" tag in the dataset.
+Our analysis showed that American artists had the highest number of highlighted artwork with 1,307 objects, followed by French artists with 905 objects, and Italian artists with 375 objects. The other nationalities in the top 10 were British, Dutch, German, Spanish, Chinese, Japanese, and Belgian.
+
+Furthermore, we analyzed the total artwork amount for each of these nationalities in the museum's collection. We found that the highest number of objects belonged to American artists, with a total of 14,205 objects, followed by Italian artists with 8,358 objects and French artists with 8,315 objects.
+The trend of highlight artwork by artist nationalities basically match the trends of the total artwork by artist nationalities. 
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| results: "asis"
+
+# Create a data frame for the bar chart
+object_counts_bar <- cleaned_data %>%
+  filter(`Object Name` != "Other") %>%
+  group_by(`Object Name`) %>%
+  summarize(count = n()) %>%
+  top_n(10, wt = count) %>%
+  mutate(`Object Name` = fct_reorder(`Object Name`, count))
+
+# Create the bar chart
+ggplot(object_counts_bar, aes(x = `Object Name`, y = count, fill = `Object Name`)) +
+  geom_col() +
+  labs(title = "Top 10 Object Medium in Collections", 
+       x = "Medium", 
+       y = "Count") +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        plot.title = element_text(hjust = 0.5)) +
+  theme(legend.position = "none")
 
 
-
-# Model
-
-$$
-Pr(\theta | y) = \frac{Pr(y | \theta) Pr(\theta)}{Pr(y)}
-$$ {#eq-bayes}
-
-@eq-bayes seems useful, eh?
-
-Here's a dumb example of how to use some references: In paper we run our analysis in `R` [@citeR]. We also use the `tidyverse` which was written by @thereferencecanbewhatever If we were interested in baseball data then @citeLahman could be useful. 
-
-We can use maths by including latex between dollar signs, for instance $\theta$.
+```
 
 
-# Results
+Our analysis showed that the most popular object medium in the MET's collection was prints. This was followed by photograph and drawings. Other popular mediums included book, fragment, and piece.
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| results: "asis"
+
+accession_data <- cleaned_data %>%
+  mutate(AccessionYear = as.Date(paste0(AccessionYear, "-01-01"))) %>%
+  group_by(AccessionYear) %>%
+  summarize(num_artworks = n())
+
+ggplot(accession_data, aes(x = AccessionYear, y = num_artworks)) +
+  geom_line() +
+  labs(title = "Number of Artworks Accessioned per Year", 
+       x = "Year", 
+       y = "Count") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+```
+
+The accession year of artwork in the Metropolitan Museum of Art (MET) provides valuable insights into the museum's acquisition history and patterns of collecting. We analyzed the number of artwork accessions per year to understand the trends in the museum's collection over time.
+Our analysis revealed that the number of accessions per year has varied significantly over the course of the museum's history. For instance, the year with the highest number of accessions was 1960s. In contrast, the year with the lowest number of accessions was 2020. 
+Furthermore, we examined the distribution of artwork accessions by decade. We found that the number of artwork access reached a peak in every 50 years. The 2010s had the second highest number of accessions, followed by the 1920s.
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| results: "asis"
+
+highlighted_artwork <- cleaned_data %>% 
+  filter(Highlight == "TRUE") %>% 
+  group_by(AccessionYear) %>% 
+  summarize(count = n())
+
+ggplot(highlighted_artwork, aes(x = AccessionYear, y = count)) +
+  geom_line() +
+  labs(title = "Number of Highlighted Artworks", 
+       x = "Year", 
+       y = "Count") +
+  ylim(0, 120)+
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+The Met defined "highlight artwork" as those that have been prominently featured in the museum's exhibitions or publications.
+Our analysis revealed that the number of highlight artwork accessions varied from year to year. Since 1900, every year the MET has acquired a new highlight artworks. We also looked at the total number of artwork accessions per year and found that there was a general trend of increasing accessions over time. In the early 1900s and before, the number of accessions was relatively low, with fewer than 500 accessions per year. However, in the latter half of the 20th century, the number of accessions increased significantly.
+
+# Discussion
+
+## Bias and Concerns about MET Collections
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| results: "asis"
+
+# filter for American, French, and Italian artists only
+artist_nationalities <- c("American", "French", "Italian")
+filtered_data <- cleaned_data %>%
+  filter(`Artist Nationality` %in% artist_nationalities)
+
+# calculate counts of artworks per nationality and year
+counts_data <- filtered_data %>%
+  group_by(`Artist Nationality`, `AccessionYear`) %>%
+  summarize(count = n())
+
+# calculate the mode of artwork counts per nationality per year
+mode_data <- counts_data %>%
+  distinct(`Artist Nationality`, `AccessionYear`, .keep_all = TRUE) %>%
+  group_by(`Artist Nationality`, `AccessionYear`) %>%
+  summarize(mode_count = as.numeric(names(sort(table(count), decreasing = TRUE))[1]))
+
+# plot the histogram of artwork counts per nationality per year
+ggplot(counts_data, aes(x = AccessionYear)) +
+  geom_histogram(bins = 15) +
+  labs(title = "Artworks Nationalities Accessed from 1900 to 2020", 
+       x = "Year", 
+       y = "Count") +
+theme_minimal() +
+  facet_wrap(vars(`Artist Nationality`), 
+             scales = "free_y", 
+             ncol = 1) +
+  scale_x_log10() +
+  labs(fill = NULL) +
+  # add the mode values as a line plot
+  geom_line(data = mode_data,
+            aes(x = `AccessionYear`,
+                y = mode_count,
+                color = `Artist Nationality`))
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+#| results: "asis"
+
+# filter for American, French, China, and Japan nationalities
+artist_nationalities <- c("American", "French")
+filtered_data <- cleaned_data %>%
+  filter(`Artist Nationality` %in% artist_nationalities,
+         AccessionYear >= 1920 & AccessionYear <= 2020,
+         Department %in% c("Print", "Photographs", "Drawing"))
+
+# group by AccessionYear, Department, and Artist Nationality and calculate the count of artworks
+grouped_data <- filtered_data %>%
+  group_by(AccessionYear, Department, `Artist Nationality`) %>%
+  summarize(count = n())
+
+# mutate Accession Year as a factor variable and group by decades
+grouped_data <- grouped_data %>%
+  mutate(AccessionYear = factor(10 * (as.numeric(AccessionYear) %/% 10)))
+
+# create boxplot
+ggplot(grouped_data, aes(x = AccessionYear, y = count)) +
+  geom_boxplot(alpha = 0.8, show.legend = FALSE) +
+  geom_jitter(alpha = 0.3, width = 0.15, height = 0) +
+  facet_wrap(vars(`Artist Nationality`), ncol = 1) +
+  scale_y_log10() +
+  labs(x = NULL)
+
+```
+
 
 # Discussion
 
 ## First discussion point {#sec-first-point}
+Our analysis revealed that the majority of artworks in the dataset were created by male artists, which is consistent with previous studies on gender representation in the art world.
 
-If my paper were 10 pages, then should be be at least 2.5 pages. The discussion is a chance to show off what you know and what you learnt from all this. 
+However, we also found there is a heavy load of american and europe art represent in the gallery, and as time goes by, the variety of collections is not changing. 
 
-## Second discussion point
 
-## Third discussion point
+## Collection acquiring
+Furthermore, we examined the accession year data and found that the majority of artworks in the dataset were acquired by the Met in the 20th century. This could be attributed to several factors, such as the Met's focus on contemporary art in the 20th century or the increase in the number of art collectors and donors during this time period. However, it is worth noting that the dataset includes a significant number of artworks that were acquired in the 19th and 21st centuries as well, indicating that the Met has been actively acquiring artworks from different time periods.
+
+## Misrepresenting the World Culture
+Misrepresentation of culture can occur when metadata highlight and accession year data are not considered carefully. Metadata highlight data can lead to a biased view of a culture if the selected artworks only represent a narrow range of themes, styles, or time periods within that culture. For example, if an art museum only highlights ancient Egyptian art that depicts pharaohs and monumental architecture, it may present a skewed and incomplete view of the complex and diverse culture of ancient Egypt. Similarly, accession year data can perpetuate stereotypes or misconceptions about a culture if the selected artworks only reflect a limited period of its history or a particular moment of cultural exchange.
+
+Therefore, it is important for art museums to consider the context and significance of each artwork when selecting pieces for metadata highlight and accession year data. By choosing a diverse range of artworks that represent different themes, styles, and time periods, museums can provide a more accurate and nuanced representation of a culture. Additionally, museums should make an effort to include works by lesser-known or underrepresented artists, as well as artworks that challenge or subvert dominant narratives about a culture. This can help to promote a more inclusive and equitable representation of cultures in art museums.
 
 ## Weaknesses and next steps
 
-Weaknesses and next steps should also be included.
+The Metropolitan Museum of Art's open dataset is a valuable resource for data scientists and researchers looking to study art, history, and culture. However, like any dataset, it has its strengths and weaknesses.
+The dataset from The Metropolitan Museum of Art (The Met) offers several strengths that make it a valuable resource for analysis. First, the dataset is large and diverse, containing over 470,000 records of art objects from around the world and across time periods. This diversity provides a vast collection for analysis, allowing researchers to explore various topics from different angles. Another strength is that the dataset is available to anyone for free, making it easily accessible to researchers and art enthusiasts alike. This open access encourages more people to use and explore the dataset, promoting broader participation and facilitating collaborative research. In addition, the dataset contains rich metadata about each object, such as its title, artist, date, medium, and dimensions. This information provides a wealth of data for analysis, offering researchers insights into the cultural and historical contexts of the objects and the artists who created them.
+
+Despite these strengths, the dataset also has some limitations that must be considered. One limitation is that the data is collected and uploaded in different formats over time, which can make it challenging to compare and analyze data across different periods. Another limitation is that the dataset primarily includes text-based information, such as titles and descriptions, and images of the art objects. Other types of data, such as audio or video recordings, are not included, which may limit certain types of analysis. Moreover, missing data is a potential issue in the dataset, as some objects may lack detailed descriptions or may be missing important metadata. This limitation can limit the reliability and validity of analyses, and it is important to consider the completeness and accuracy of the data when conducting research using this dataset. Additionally, the gender of artists is significantly missing from the dataset, which may impact the analysis of gender representation in art.
+
+Overall, while the Met's open dataset is a valuable resource for data science analysis, researchers should be aware of its limitations and potential biases when interpreting the results of their analyses.
+
 
 \newpage
 
 \appendix
 
-# Appendix {-}
-
+# Appendix {.unnumbered}
 
 # Additional details
 
-
 \newpage
 
-
 # References
-
-

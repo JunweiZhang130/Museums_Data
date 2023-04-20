@@ -11,6 +11,16 @@
 #### Workspace setup ####
 library(opendatatoronto)
 library(tidyverse)
+<<<<<<< HEAD
+library(readxl)
+
+#### Download data ####
+download.file("https://github.com/metmuseum/openaccess/raw/master/MetObjects.csv", 
+              "MetObjects.csv")
+
+#### Save data ####
+MetObjects <- read_csv("inputs/data/MetObjects.csv")
+=======
 # [...UPDATE THIS...]
 
 #### Download data ####
@@ -24,3 +34,4 @@ library(tidyverse)
 write_csv(the_raw_data, "inputs/data/raw_data.csv") 
 
          
+>>>>>>> parent of 7808dbb (Simulation and download the data.)
